@@ -185,17 +185,17 @@ function App() {
 				</div>
 			) : (
 				!initialLoad && (
-					<div className="hidden h-96 md:flex flex-col justify-start items-start md:px-28 px-8 py-8  bg-gradient-to-b from-[#2e1216] bg-black w-full ">
-						<div className="flex flex-col md:flex-row rounded-lg md:h-72 md:w-full ">
+					<div className=" md:h-96 md:flex flex-col justify-start items-start md:px-28 px-8 py-8  bg-gradient-to-b from-[#2e1216] bg-black w-full ">
+						<div className=" md:flex flex-col md:flex-row rounded-lg md:h-72 md:w-full ">
 							<img
-								className="  md:h-72 md:w-72 "
+								className=" md:h-72 md:w-72 "
 								src="https://th.bing.com/th/id/OIP.TwiIfaePJW6nAT1P4dp_cgHaHa?pid=ImgDet&rs=1"
 							></img>
 							<div className="bg-gray-400 bg-opacity-40 flex-1 flex flex-col p-8">
 								<div className="text-white text-xl md:text-2xl font-extrabold mb-4">
 									Pro Tip 💡
 								</div>
-								<div className="text-white md:text-xl mb-8 font-semibold">
+								<div className="text-white text-xl md:text-xl mb-8 font-semibold">
 									Get crazy with your prompt
 								</div>
 								<div className="text-white text-xl md:text-2xl">
