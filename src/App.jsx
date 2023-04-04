@@ -10,7 +10,7 @@ const randomPromptsAndResults = [
 		"Dog riding car": [
 			"https://th.bing.com/th/id/OIG.FVTof5vie10AnHVKe3o2?pid=ImgGn",
 			"https://th.bing.com/th/id/OIG.W1Zl_BEh1pecE52Jdc1x?pid=ImgGn",
-			"://th.bing.com/th/id/OIG.84rMcYHaHt6.8nkw.Y04?pid=ImgGn",
+			"https://th.bing.com/th/id/OIG.84rMcYHaHt6.8nkw.Y04?pid=ImgGn",
 			"https://th.bing.com/th/id/OIG.ODO.XaxJMc8_7AyZoCQL?pid=ImgGn",
 		],
 	},
@@ -44,8 +44,15 @@ const getPrediction = (prompt, randomValue = 3) => {
 	return new Promise((resolve) => {
 		setTimeout(() => {
 			let result = [];
+			var present = null;
+			present = randomPromptsAndResults.find((obj) =>
+				obj.hasOwnProperty(prompt)
+			);
+			console.log(`present value ${present} ${present[prompt]}`);
 			if (randomPromptsAndResults[randomValue][prompt]) {
 				result = randomPromptsAndResults[randomValue][prompt];
+			} else if (present != null) {
+				result = present[prompt];
 			} else if (prompt.trim() != "" && prompt != undefined) {
 				result = randomPromptsAndResults[3]["default prompt"];
 			}
@@ -56,51 +63,52 @@ const getPrediction = (prompt, randomValue = 3) => {
 					predict_time: 11.990901,
 				},
 			});
-		}, 1000);
+		}, 10000);
 	});
 };
 
 function App() {
 	const [prompt, setPrompt] = useState("");
 	const [images, setImages] = useState([]);
-	// const [progress, setProgress] = useState(0);
-	const [inProgress, setInProgress] = useState(false);
+	const [progress, setProgress] = useState(0);
+	// const [inProgress, setInProgress] = useState(false);
 	const currentProgress = useRef();
 
-	// useEffect(() => {
-	// 	return () => clearInterval(currentProgress.current);
-	// }, []);
-	// useEffect(() => {
-	// 	if (progress >= 100) {
-	// 		clearInterval(currentProgress.current);
-	// 		setProgress(0);
-	// 	}
-	// }, [progress]);
-	// const timer = () => {
-	// 	if (progress != 0) {
-	// 		clearInterval(currentProgress.current);
-	// 		setProgress(0);
-	// 	}
-	// 	currentProgress.current = setInterval(() => {
-	// 		setProgress((prev) => prev + 1);
-	// 	}, 100);
-	// };
+	useEffect(() => {
+		return () => clearInterval(currentProgress.current);
+	}, []);
+	useEffect(() => {
+		if (progress >= 100) {
+			clearInterval(currentProgress.current);
+			setProgress(0);
+		}
+	}, [progress]);
+	const timer = () => {
+		if (progress != 0) {
+			clearInterval(currentProgress.current);
+			setProgress(0);
+		}
+		currentProgress.current = setInterval(() => {
+			setProgress((prev) => prev + 1);
+		}, 100);
+	};
 
 	const handleSubmit = async (e) => {
 		if (prompt.trim() === "" || prompt === null) {
-			toast.error("Prompt Cannot be empty");
+			return toast.error("Prompt Cannot be empty");
 		}
-		setInProgress(true);
+		timer();
+		console.log(prompt);
+		// setInProgress(true);
 
 		const response = await getPrediction(prompt);
 
 		const { result } = response;
 		setImages(result);
-		setInProgress(false);
 	};
 
 	const handleRandom = async (e) => {
-		setInProgress(true);
+		timer();
 		let response;
 		var prompt;
 		const randomIndex = Math.floor(Math.random() * 3);
@@ -121,7 +129,6 @@ function App() {
 		response = await getPrediction(prompt, randomIndex);
 		const { result } = response;
 		setImages(result);
-		setInProgress(false);
 	};
 	return (
 		<div>
@@ -140,7 +147,7 @@ function App() {
 			{/* {progress > 0 && progress <= 100 && (
 				<Progress value={progress} color="green" className="h-5" />
 			)} */}
-			{inProgress && <Progress variant="filled" value={20} />}
+			{progress !== 0 && <Progress value={progress} />}
 			<div className="grid grid-cols-2 gap-4">
 				{images.map((image, index) => (
 					<img key={index} src={image} alt={`Image ${index}`} />
