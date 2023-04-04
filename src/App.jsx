@@ -36,18 +36,19 @@ const randomPromptsAndResults = [
 	},
 ];
 
-const getPrediction = (prompt, intervalId) => {
+const getPrediction = (prompt, intervalId, randomValue = 4) => {
 	return new Promise((resolve) => {
 		setTimeout(() => {
 			clearInterval(intervalId);
 			resolve({
 				status: "succeeded",
-				result: [
-					"https://picsum.photos/id/1015/200/300",
-					"https://picsum.photos/id/1016/200/300",
-					"https://picsum.photos/id/1018/200/300",
-					"https://picsum.photos/id/1019/200/300",
-				],
+				// result: [
+				// 	"https://picsum.photos/id/1015/200/300",
+				// 	"https://picsum.photos/id/1016/200/300",
+				// 	"https://picsum.photos/id/1018/200/300",
+				// 	"https://picsum.photos/id/1019/200/300",
+				// ],
+				result: randomPromptsAndResults[randomValue][prompt],
 				metrics: {
 					predict_time: 11.990901,
 				},
@@ -55,14 +56,11 @@ const getPrediction = (prompt, intervalId) => {
 		}, 10000);
 	});
 };
-const getResultFromprompt = (prompt) => {
-	return randomPromptsAndResults[prompt];
-};
 
 function App() {
 	const [prompt, setPrompt] = useState("");
 	const [images, setImages] = useState([]);
-	// const [intervalId, setIntervalId] = useState(null);
+	const [intervalId, setIntervalId] = useState(null);
 	const [progress, setProgress] = useState(0);
 	const [fetched, setFecthed] = useState(false);
 	const currentProgress = useRef();
@@ -117,39 +115,26 @@ function App() {
 			setProgress(0);
 		}
 		let response;
+		var prompt;
 		const randomIndex = Math.floor(Math.random() * 3);
 		switch (randomIndex) {
 			case 0:
-				var prompt = Object.keys(randomPromptsAndResults[0])[0];
-				setPrompt(prompt);
-				response = await getPrediction(prompt);
-				({ result } = response);
-				setImages(result);
+				prompt = Object.keys(randomPromptsAndResults[0])[0];
 				break;
 			case 1:
-				var prompt = Object.keys(randomPromptsAndResults[1])[0];
-				setPrompt(prompt);
-				getPrediction(prompt);
-				response = await getPrediction(prompt);
-				({ result } = response);
-				setImages(result);
+				prompt = Object.keys(randomPromptsAndResults[1])[0];
 				break;
-
 			case 2:
-				var prompt = Object.keys(randomPromptsAndResults[2])[0];
-				setPrompt(prompt);
-				getPrediction(prompt);
-				response = await getPrediction(prompt);
-				({ result } = response);
-				setImages(result);
-
+				prompt = Object.keys(randomPromptsAndResults[2])[0];
 				break;
-
 			default:
-				var prompt = Object.keys(randomPromptsAndResults[2])[0];
-				// setPrompt(prompt);
+				prompt = Object.keys(randomPromptsAndResults[2])[0];
 				getPrediction(prompt);
 		}
+		setPrompt(prompt);
+		response = await getPrediction(prompt, intervalId, randomIndex);
+		const { result } = response;
+		setImages(result);
 	};
 	return (
 		<div>
@@ -161,14 +146,14 @@ function App() {
 					onChange={(e) => setPrompt(e.target.value)}
 				/>
 			</label>
-			<button onClick={timer}>Submit</button>
+			<button onClick={handleSubmit}>Submit</button>
 			<button onClick={handleRandom} type="submit">
 				Random
 			</button>
 			<div>{progress > 0 && `Completed ${progress}%`}</div>
-			{progress > 0 && progress <= 100 && (
+			{/* {progress > 0 && progress <= 100 && (
 				<Progress value={progress} color="green" className="h-5" />
-			)}
+			)} */}
 			<div className="grid grid-cols-2 gap-4">
 				{images.map((image, index) => (
 					<img key={index} src={image} alt={`Image ${index}`} />
