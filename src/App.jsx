@@ -141,6 +141,7 @@ function App() {
 		<div className="flex min-h-screen w-full flex-col object-contain ">
 			<div className="relative h-96 w-full">
 				<div className="absolute h-full w-full bg-[url('https://static.fotor.com/app/features/img/aiimage/background_image3.jpg')] bg-cover object-cover"></div>
+
 				<div className="extra absolute flex h-full  w-full flex-col items-center justify-center  bg-gradient-to-tr from-yellow-300 to-green-400 bg-clip-text text-3xl md:text-5xl  lg:text-7xl font-bold text-transparent">
 					Text to Image with <br />
 					<hr />
@@ -187,6 +188,17 @@ function App() {
 				!initialLoad && (
 					<div className=" md:h-96 md:flex flex-col justify-start items-start md:px-28 px-8 py-8  bg-gradient-to-b from-[#2e1216] bg-black w-full ">
 						<div className=" md:flex flex-col md:flex-row rounded-lg md:h-72 md:w-full ">
+							<div className=" md:hidden text-white">
+								Your image is being created by AI
+							</div>
+							{progress && (
+								// <Progress value={progress} color="green" variant="gradient" />
+								<progress
+									className=" md:hidden progress w-full progress-accent h-3"
+									value={progress}
+									max="100"
+								></progress>
+							)}
 							<img
 								className=" md:h-72 md:w-72 "
 								src="https://th.bing.com/th/id/OIP.TwiIfaePJW6nAT1P4dp_cgHaHa?pid=ImgDet&rs=1"
@@ -208,12 +220,14 @@ function App() {
 						{progress && (
 							// <Progress value={progress} color="green" variant="gradient" />
 							<progress
-								className="progress w-full progress-accent h-3"
+								className="hidden md:block progress w-full progress-accent h-3"
 								value={progress}
 								max="100"
 							></progress>
 						)}
-						<div className="text-white">Your image is being created by AI</div>
+						<div className="hidden md:block text-white">
+							Your image is being created by AI
+						</div>
 					</div>
 				)
 			)}
@@ -259,6 +273,14 @@ function App() {
 					</div>
 				</div>
 			</div>
+			{/* <div className="flex items-center p-4 md:p-8 justify-center bg-black mo">
+				<img
+					src="https://img.icons8.com/fluency/512/github.png"
+					className="  md:right-28 md:top-12 md:h-12 md:w-12 h-8 w-8 "
+					alt=""
+				/>
+				<div className="text-white">Github</div>
+			</div> */}
 			<ToastContainer />
 		</div>
 	);
