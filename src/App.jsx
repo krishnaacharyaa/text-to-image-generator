@@ -4,7 +4,6 @@ import { Progress } from "@material-tailwind/react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import "./App.css";
 const randomPromptsAndResults = [
 	{
 		"Dog riding car": [
