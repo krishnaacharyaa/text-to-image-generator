@@ -1,50 +1,41 @@
 import { useState } from "react";
 import { Progress } from "@material-tailwind/react";
 import "./App.css";
-const randomPrompts = [
-	"Dog riding car",
-	"Beautiful girl painting art, Elephant using mobile phone",
+const randomPromptsAndResults = [
+	{
+		"Dog riding car": [
+			"https://th.bing.com/th/id/OIG.FVTof5vie10AnHVKe3o2?pid=ImgGn",
+			"https://th.bing.com/th/id/OIG.W1Zl_BEh1pecE52Jdc1x?pid=ImgGn",
+			"://th.bing.com/th/id/OIG.84rMcYHaHt6.8nkw.Y04?pid=ImgGn",
+			"https://th.bing.com/th/id/OIG.ODO.XaxJMc8_7AyZoCQL?pid=ImgGn",
+		],
+	},
+	{
+		"Beautiful girl painting art": [
+			"https://th.bing.com/th/id/OIG.hvDyOStcmHoEU7_Agp8q?pid=ImgGn",
+			"https://th.bing.com/th/id/OIG.Vk.PxVHqCAPgEwzHbBnF?pid=ImgGn",
+			"https://th.bing.com/th/id/OIG.aV7iM5ckbyVguHs6NbB_?pid=ImgGn",
+			"https://th.bing.com/th/id/OIG.DtWUYpwWeV1y2aFzhTcD?pid=ImgGn",
+		],
+	},
+	{
+		"Elephant using mobile phone": [
+			"https://th.bing.com/th/id/OIG.tUikWFQHGDEgD2jzifJC?pid=ImgGn",
+			"https://th.bing.com/th/id/OIG.br7ZPMf3JeYOWHHMjYp8?pid=ImgGn",
+			"https://th.bing.com/th/id/OIG.Xf5KVYm0p0G6ijBbVv4G?pid=ImgGn",
+			"https://th.bing.com/th/id/OIG.VDxvTXpL0zjKyNXPb_Av?pid=ImgGn",
+		],
+	},
+	{
+		default: [
+			"https://th.bing.com/th/id/OIG.hm_Iy0E5VpDPc4yHn2LC?pid=ImgGn",
+			"https://th.bing.com/th/id/OIG.3qvW2qmlqOqId6ksHETJ?pid=ImgGn",
+			"https://th.bing.com/th/id/OIG.t3OiS4xjiJaHYyT3t3tk?pid=ImgGn",
+			"https://th.bing.com/th/id/OIG.0UySDby6M5re9.TDiyU5?pid=ImgGn",
+		],
+	},
 ];
-const getRandomImageSet = () => {
-	const randomIndex = Math.floor(Math.random() * 3);
-	switch (randomIndex) {
-		case 0:
-			return {
-				prompt: "Dog riding car",
-				images: [
-					"https://th.bing.com/th/id/OIG.FVTof5vie10AnHVKe3o2?pid=ImgGn",
-					"https://th.bing.com/th/id/OIG.W1Zl_BEh1pecE52Jdc1x?pid=ImgGn",
-					"https://th.bing.com/th/id/OIG.84rMcYHaHt6.8nkw.Y04?pid=ImgGn",
-					"https://th.bing.com/th/id/OIG.ODO.XaxJMc8_7AyZoCQL?pid=ImgGn",
-				],
-			};
-		case 1:
-			return {
-				prompt: "beautiful girl painting art:",
-				images: [
-					"https://th.bing.com/th/id/OIG.hvDyOStcmHoEU7_Agp8q?pid=ImgGn",
-					"https://th.bing.com/th/id/OIG.Vk.PxVHqCAPgEwzHbBnF?pid=ImgGn",
-					"https://th.bing.com/th/id/OIG.aV7iM5ckbyVguHs6NbB_?pid=ImgGn",
-					"https://th.bing.com/th/id/OIG.DtWUYpwWeV1y2aFzhTcD?pid=ImgGn",
-				],
-			};
-		case 2:
-			return {
-				prompt: "elephant using mobile phone:",
-				images: [
-					"https://th.bing.com/th/id/OIG.tUikWFQHGDEgD2jzifJC?pid=ImgGn",
-					"https://th.bing.com/th/id/OIG.br7ZPMf3JeYOWHHMjYp8?pid=ImgGn",
-					"https://th.bing.com/th/id/OIG.Xf5KVYm0p0G6ijBbVv4G?pid=ImgGn",
-					"https://th.bing.com/th/id/OIG.VDxvTXpL0zjKyNXPb_Av?pid=ImgGn",
-				],
-			};
-		default:
-			return {
-				prompt: "",
-				images: [],
-			};
-	}
-};
+
 const getPrediction = (prompt, intervalId) => {
 	return new Promise((resolve) => {
 		setTimeout(() => {
@@ -64,6 +55,9 @@ const getPrediction = (prompt, intervalId) => {
 		}, 10000);
 	});
 };
+const getResultFromprompt = (prompt) => {
+	return randomPromptsAndResults[prompt];
+};
 function App() {
 	const [prompt, setPrompt] = useState("");
 	const [images, setImages] = useState([]);
@@ -71,13 +65,16 @@ function App() {
 	const [progress, setProgress] = useState(0);
 
 	const handleSubmit = async (e) => {
-		e.preventDefault();
 		setProgress(0);
 		setIntervalId(
 			setInterval(() => {
 				setProgress((progress) => progress + 1);
 			}, Math.round(10000 / 100))
 		);
+		if (progress === 100) {
+			clearInterval(intervalId);
+			setProgress(0);
+		}
 
 		// Call the API and get the response
 		const response = await getPrediction(prompt, intervalId);
@@ -87,20 +84,66 @@ function App() {
 		setImages(result);
 	};
 
+	const handleRandom = async (e) => {
+		setProgress(0);
+		setIntervalId(
+			setInterval(() => {
+				setProgress((progress) => progress + 1);
+			}, Math.round(10000 / 100))
+		);
+		if (progress === 100) {
+			clearInterval(intervalId);
+			setProgress(0);
+		}
+		let response;
+		const randomIndex = Math.floor(Math.random() * 3);
+		switch (randomIndex) {
+			case 0:
+				var prompt = Object.keys(randomPromptsAndResults[0])[0];
+				setPrompt(prompt);
+				response = await getPrediction(prompt);
+				({ result } = response);
+				setImages(result);
+				break;
+			case 1:
+				var prompt = Object.keys(randomPromptsAndResults[1])[0];
+				setPrompt(prompt);
+				getPrediction(prompt);
+				response = await getPrediction(prompt);
+				({ result } = response);
+				setImages(result);
+				break;
+
+			case 2:
+				var prompt = Object.keys(randomPromptsAndResults[2])[0];
+				setPrompt(prompt);
+				getPrediction(prompt);
+				response = await getPrediction(prompt);
+				({ result } = response);
+				setImages(result);
+
+				break;
+
+			default:
+				var prompt = Object.keys(randomPromptsAndResults[2])[0];
+				// setPrompt(prompt);
+				getPrediction(prompt);
+		}
+	};
 	return (
 		<div>
-			<form onSubmit={handleSubmit}>
-				<label>
-					Enter Prompt:
-					<input
-						type="text"
-						value={prompt}
-						onChange={(e) => setPrompt(e.target.value)}
-					/>
-				</label>
-				<button type="submit">Submit</button>
-				<button type="submit">Random</button>
-			</form>
+			<label>
+				Enter Prompt:
+				<input
+					type="text"
+					value={prompt}
+					onChange={(e) => setPrompt(e.target.value)}
+				/>
+			</label>
+			<button onClick={handleSubmit}>Submit</button>
+			<button onClick={handleRandom} type="submit">
+				Random
+			</button>
 			<div>{progress > 0 && `Completed ${progress}%`}</div>
 			{progress > 0 && progress <= 100 && (
 				<Progress value={progress} color="green" className="h-5" />
