@@ -74,6 +74,7 @@ function App() {
 	const [prompt, setPrompt] = useState("");
 	const [images, setImages] = useState([]);
 	const [progress, setProgress] = useState(0);
+	const [initialLoad, setInitialLoad] = useState(true);
 	const currentProgress = useRef();
 
 	useEffect(() => {
@@ -96,6 +97,7 @@ function App() {
 	};
 
 	const handleSubmit = async (e) => {
+		setInitialLoad(false);
 		setImages([]);
 		if (prompt.trim() === "" || prompt === null) {
 			return toast.error("Prompt Cannot be empty");
@@ -111,6 +113,7 @@ function App() {
 	};
 
 	const handleRandom = async (e) => {
+		setInitialLoad(false);
 		setImages([]);
 		timer();
 		let response;
@@ -181,36 +184,38 @@ function App() {
 					))}
 				</div>
 			) : (
-				<div className="hidden h-96 md:flex flex-col justify-start items-start md:px-28 px-8 py-8  bg-gradient-to-b from-[#2e1216] bg-black w-full ">
-					<div className="flex flex-col md:flex-row rounded-lg md:h-72 md:w-full ">
-						<img
-							className="  md:h-72 md:w-72 "
-							src="https://th.bing.com/th/id/OIP.TwiIfaePJW6nAT1P4dp_cgHaHa?pid=ImgDet&rs=1"
-						></img>
-						<div className="bg-gray-400 bg-opacity-40 flex-1 flex flex-col p-8">
-							<div className="text-white text-xl md:text-2xl font-extrabold mb-4">
-								Pro Tip 💡
-							</div>
-							<div className="text-white md:text-xl mb-8 font-semibold">
-								Get crazy with your prompt
-							</div>
-							<div className="text-white text-xl md:text-2xl">
-								Try: "An astronaut resting on mars in a beach chair, vibrant
-								lighting, elegant, highly detailed, smooth, sharp focus,
-								illustration, beautiful, geometric"
+				initialLoad && (
+					<div className="hidden h-96 md:flex flex-col justify-start items-start md:px-28 px-8 py-8  bg-gradient-to-b from-[#2e1216] bg-black w-full ">
+						<div className="flex flex-col md:flex-row rounded-lg md:h-72 md:w-full ">
+							<img
+								className="  md:h-72 md:w-72 "
+								src="https://th.bing.com/th/id/OIP.TwiIfaePJW6nAT1P4dp_cgHaHa?pid=ImgDet&rs=1"
+							></img>
+							<div className="bg-gray-400 bg-opacity-40 flex-1 flex flex-col p-8">
+								<div className="text-white text-xl md:text-2xl font-extrabold mb-4">
+									Pro Tip 💡
+								</div>
+								<div className="text-white md:text-xl mb-8 font-semibold">
+									Get crazy with your prompt
+								</div>
+								<div className="text-white text-xl md:text-2xl">
+									Try: "An astronaut resting on mars in a beach chair, vibrant
+									lighting, elegant, highly detailed, smooth, sharp focus,
+									illustration, beautiful, geometric"
+								</div>
 							</div>
 						</div>
+						{progress && (
+							// <Progress value={progress} color="green" variant="gradient" />
+							<progress
+								className="progress w-full progress-accent h-3"
+								value={progress}
+								max="100"
+							></progress>
+						)}
+						<div className="text-white">Your image is being created by AI</div>
 					</div>
-					{progress && (
-						// <Progress value={progress} color="green" variant="gradient" />
-						<progress
-							className="progress w-full progress-accent h-3"
-							value={progress}
-							max="100"
-						></progress>
-					)}
-					<div className="text-white">Your image is being created by AI</div>
-				</div>
+				)
 			)}
 			<div className=" py-8 text-center text-2xl text-white bg-black">
 				Featured Gallery
