@@ -60,117 +60,122 @@ const getResultFromprompt = (prompt) => {
 };
 
 function App() {
-	// const [prompt, setPrompt] = useState("");
-	// const [images, setImages] = useState([]);
-	// // const [intervalId, setIntervalId] = useState(null);
-	// const [progress, setProgress] = useState(0);
-	// const [fetched, setFecthed] = useState(false);
+	const [prompt, setPrompt] = useState("");
+	const [images, setImages] = useState([]);
+	// const [intervalId, setIntervalId] = useState(null);
+	const [progress, setProgress] = useState(0);
+	const [fetched, setFecthed] = useState(false);
+	const currentProgress = useRef();
+	useEffect(() => {
+		return () => clearInterval(currentProgress.current);
+	}, []);
+	useEffect(() => {
+		if (progress >= 100) {
+			clearInterval(currentProgress.current);
+			setProgress(0);
+		}
+	}, [progress]);
 
-	// let localTimer;
-	// useEffect(() => {
-	// 	console.log(progress);
-	// 	if (progress >= 100) {
-	// 		clearInterval(localTimer);
-	// 		setProgress(0);
-	// 	}
-	// }, [progress]);
-	// // let intervalId;
-	// const timer = () => {
-	// 	localTimer = setInterval(() => {
-	// 		setProgress((value) => value + 1);
-	// 	}, 100);
-	// };
-	// const handleSubmit = async (e) => {
-	// 	setProgress(0);
-	// 	setIntervalId(
-	// 		setInterval(() => {
-	// 			setProgress((progress) => progress + 1);
-	// 		}, Math.round(10000 / 100))
-	// 	);
-	// 	if (progress === 100) {
-	// 		clearInterval(intervalId);
-	// 		setProgress(0);
-	// 	}
+	const timer = () => {
+		if (progress != 0) {
+			clearInterval(currentProgress.current);
+			setProgress(0);
+		}
+		currentProgress.current = setInterval(() => {
+			setProgress((prev) => prev + 1);
+		}, 100);
+	};
+	const handleSubmit = async (e) => {
+		setProgress(0);
+		setIntervalId(
+			setInterval(() => {
+				setProgress((progress) => progress + 1);
+			}, Math.round(10000 / 100))
+		);
+		if (progress === 100) {
+			clearInterval(intervalId);
+			setProgress(0);
+		}
 
-	// 	// Call the API and get the response
-	// 	const response = await getPrediction(prompt, intervalId);
+		// Call the API and get the response
+		const response = await getPrediction(prompt, intervalId);
 
-	// 	// Extract the images array from the response and set it in the state
-	// 	const { result } = response;
-	// 	setImages(result);
-	// };
+		// Extract the images array from the response and set it in the state
+		const { result } = response;
+		setImages(result);
+	};
 
-	// const handleRandom = async (e) => {
-	// 	setProgress(0);
-	// 	setIntervalId(
-	// 		setInterval(() => {
-	// 			setProgress((progress) => progress + 1);
-	// 		}, Math.round(10000 / 100))
-	// 	);
-	// 	if (progress === 100) {
-	// 		clearInterval(intervalId);
-	// 		setProgress(0);
-	// 	}
-	// 	let response;
-	// 	const randomIndex = Math.floor(Math.random() * 3);
-	// 	switch (randomIndex) {
-	// 		case 0:
-	// 			var prompt = Object.keys(randomPromptsAndResults[0])[0];
-	// 			setPrompt(prompt);
-	// 			response = await getPrediction(prompt);
-	// 			({ result } = response);
-	// 			setImages(result);
-	// 			break;
-	// 		case 1:
-	// 			var prompt = Object.keys(randomPromptsAndResults[1])[0];
-	// 			setPrompt(prompt);
-	// 			getPrediction(prompt);
-	// 			response = await getPrediction(prompt);
-	// 			({ result } = response);
-	// 			setImages(result);
-	// 			break;
+	const handleRandom = async (e) => {
+		setProgress(0);
+		setIntervalId(
+			setInterval(() => {
+				setProgress((progress) => progress + 1);
+			}, Math.round(10000 / 100))
+		);
+		if (progress === 100) {
+			clearInterval(intervalId);
+			setProgress(0);
+		}
+		let response;
+		const randomIndex = Math.floor(Math.random() * 3);
+		switch (randomIndex) {
+			case 0:
+				var prompt = Object.keys(randomPromptsAndResults[0])[0];
+				setPrompt(prompt);
+				response = await getPrediction(prompt);
+				({ result } = response);
+				setImages(result);
+				break;
+			case 1:
+				var prompt = Object.keys(randomPromptsAndResults[1])[0];
+				setPrompt(prompt);
+				getPrediction(prompt);
+				response = await getPrediction(prompt);
+				({ result } = response);
+				setImages(result);
+				break;
 
-	// 		case 2:
-	// 			var prompt = Object.keys(randomPromptsAndResults[2])[0];
-	// 			setPrompt(prompt);
-	// 			getPrediction(prompt);
-	// 			response = await getPrediction(prompt);
-	// 			({ result } = response);
-	// 			setImages(result);
+			case 2:
+				var prompt = Object.keys(randomPromptsAndResults[2])[0];
+				setPrompt(prompt);
+				getPrediction(prompt);
+				response = await getPrediction(prompt);
+				({ result } = response);
+				setImages(result);
 
-	// 			break;
+				break;
 
-	// 		default:
-	// 			var prompt = Object.keys(randomPromptsAndResults[2])[0];
-	// 			// setPrompt(prompt);
-	// 			getPrediction(prompt);
-	// 	}
-	// };
-	// return (
-	// 	<div>
-	// 		<label>
-	// 			Enter Prompt:
-	// 			<input
-	// 				type="text"
-	// 				value={prompt}
-	// 				onChange={(e) => setPrompt(e.target.value)}
-	// 			/>
-	// 		</label>
-	// 		<button onClick={timer}>Submit</button>
-	// 		<button onClick={handleRandom} type="submit">
-	// 			Random
-	// 		</button>
-	// 		<div>{progress > 0 && `Completed ${progress}%`}</div>
-	// 		{progress > 0 && progress <= 100 && (
-	// 			<Progress value={progress} color="green" className="h-5" />
-	// 		)}
-	// 		<div className="grid grid-cols-2 gap-4">
-	// 			{images.map((image, index) => (
-	// 				<img key={index} src={image} alt={`Image ${index}`} />
-	// 			))}
-	// 		</div>
-	// 	</div>
-	// );
+			default:
+				var prompt = Object.keys(randomPromptsAndResults[2])[0];
+				// setPrompt(prompt);
+				getPrediction(prompt);
+		}
+	};
+	return (
+		<div>
+			<label>
+				Enter Prompt:
+				<input
+					type="text"
+					value={prompt}
+					onChange={(e) => setPrompt(e.target.value)}
+				/>
+			</label>
+			<button onClick={timer}>Submit</button>
+			<button onClick={handleRandom} type="submit">
+				Random
+			</button>
+			<div>{progress > 0 && `Completed ${progress}%`}</div>
+			{progress > 0 && progress <= 100 && (
+				<Progress value={progress} color="green" className="h-5" />
+			)}
+			<div className="grid grid-cols-2 gap-4">
+				{images.map((image, index) => (
+					<img key={index} src={image} alt={`Image ${index}`} />
+				))}
+			</div>
+		</div>
+	);
 	// const [mytime, setMytime] = useState(0);
 
 	// useEffect(() => {
@@ -189,31 +194,31 @@ function App() {
 
 	// return <div> {mytime} </div>;
 
-	const [time, setTime] = useState(0);
-	const currentTimer = useRef();
-	useEffect(() => {
-		return () => clearInterval(currentTimer.current);
-	}, []);
-	const startTimer = () => {
-		currentTimer.current = setInterval(() => {
-			setTime((prev) => prev + 1);
-		}, 1000);
-	};
-	const stopTimer = () => {
-		clearInterval(currentTimer.current);
-	};
-	const resetTimer = () => {
-		clearInterval(currentTimer.current);
-		setTime(0);
-	};
-	return (
-		<div>
-			<div>{time}</div>
-			<button onClick={startTimer}>Start</button>
-			<button onClick={stopTimer}>Stop</button>
-			<button onClick={resetTimer}>Reset</button>
-		</div>
-	);
+	// const [time, setTime] = useState(0);
+	// const currentTimer = useRef();
+	// useEffect(() => {
+	// 	return () => clearInterval(currentTimer.current);
+	// }, []);
+	// const startTimer = () => {
+	// 	currentTimer.current = setInterval(() => {
+	// 		setTime((prev) => prev + 1);
+	// 	}, 1000);
+	// };
+	// const stopTimer = () => {
+	// 	clearInterval(currentTimer.current);
+	// };
+	// const resetTimer = () => {
+	// 	clearInterval(currentTimer.current);
+	// 	setTime(0);
+	// };
+	// return (
+	// 	<div>
+	// 		<div>{time}</div>
+	// 		<button onClick={startTimer}>Start</button>
+	// 		<button onClick={stopTimer}>Stop</button>
+	// 		<button onClick={resetTimer}>Reset</button>
+	// 	</div>
+	// );
 }
 
 export default App;
