@@ -1,5 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Progress } from "@material-tailwind/react";
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import "./App.css";
 const randomPromptsAndResults = [
 	{
@@ -36,84 +40,67 @@ const randomPromptsAndResults = [
 	},
 ];
 
-const getPrediction = (prompt, intervalId, randomValue = 4) => {
+const getPrediction = (prompt, randomValue = 3) => {
 	return new Promise((resolve) => {
 		setTimeout(() => {
-			clearInterval(intervalId);
+			let result = [];
+			if (randomPromptsAndResults[randomValue][prompt]) {
+				result = randomPromptsAndResults[randomValue][prompt];
+			} else if (prompt.trim() != "" && prompt != undefined) {
+				result = randomPromptsAndResults[3]["default prompt"];
+			}
 			resolve({
 				status: "succeeded",
-				// result: [
-				// 	"https://picsum.photos/id/1015/200/300",
-				// 	"https://picsum.photos/id/1016/200/300",
-				// 	"https://picsum.photos/id/1018/200/300",
-				// 	"https://picsum.photos/id/1019/200/300",
-				// ],
-				result: randomPromptsAndResults[randomValue][prompt],
+				result: result,
 				metrics: {
 					predict_time: 11.990901,
 				},
 			});
-		}, 10000);
+		}, 1000);
 	});
 };
 
 function App() {
 	const [prompt, setPrompt] = useState("");
 	const [images, setImages] = useState([]);
-	const [intervalId, setIntervalId] = useState(null);
-	const [progress, setProgress] = useState(0);
-	const [fetched, setFecthed] = useState(false);
+	// const [progress, setProgress] = useState(0);
+	const [inProgress, setInProgress] = useState(false);
 	const currentProgress = useRef();
-	useEffect(() => {
-		return () => clearInterval(currentProgress.current);
-	}, []);
-	useEffect(() => {
-		if (progress >= 100) {
-			clearInterval(currentProgress.current);
-			setProgress(0);
-		}
-	}, [progress]);
 
-	const timer = () => {
-		if (progress != 0) {
-			clearInterval(currentProgress.current);
-			setProgress(0);
-		}
-		currentProgress.current = setInterval(() => {
-			setProgress((prev) => prev + 1);
-		}, 100);
-	};
+	// useEffect(() => {
+	// 	return () => clearInterval(currentProgress.current);
+	// }, []);
+	// useEffect(() => {
+	// 	if (progress >= 100) {
+	// 		clearInterval(currentProgress.current);
+	// 		setProgress(0);
+	// 	}
+	// }, [progress]);
+	// const timer = () => {
+	// 	if (progress != 0) {
+	// 		clearInterval(currentProgress.current);
+	// 		setProgress(0);
+	// 	}
+	// 	currentProgress.current = setInterval(() => {
+	// 		setProgress((prev) => prev + 1);
+	// 	}, 100);
+	// };
+
 	const handleSubmit = async (e) => {
-		setProgress(0);
-		setIntervalId(
-			setInterval(() => {
-				setProgress((progress) => progress + 1);
-			}, Math.round(10000 / 100))
-		);
-		if (progress === 100) {
-			clearInterval(intervalId);
-			setProgress(0);
+		if (prompt.trim() === "" || prompt === null) {
+			toast.error("Prompt Cannot be empty");
 		}
+		setInProgress(true);
 
-		// Call the API and get the response
-		const response = await getPrediction(prompt, intervalId);
+		const response = await getPrediction(prompt);
 
-		// Extract the images array from the response and set it in the state
 		const { result } = response;
 		setImages(result);
+		setInProgress(false);
 	};
 
 	const handleRandom = async (e) => {
-		setProgress(0);
-		setIntervalId(
-			setInterval(() => {
-				setProgress((progress) => progress + 1);
-			}, Math.round(10000 / 100))
-		);
-		if (progress === 100) {
-			clearInterval(intervalId);
-			setProgress(0);
-		}
+		setInProgress(true);
 		let response;
 		var prompt;
 		const randomIndex = Math.floor(Math.random() * 3);
@@ -128,13 +115,13 @@ function App() {
 				prompt = Object.keys(randomPromptsAndResults[2])[0];
 				break;
 			default:
-				prompt = Object.keys(randomPromptsAndResults[2])[0];
-				getPrediction(prompt);
+				prompt = Object.keys(randomPromptsAndResults[3])[0];
 		}
 		setPrompt(prompt);
-		response = await getPrediction(prompt, intervalId, randomIndex);
+		response = await getPrediction(prompt, randomIndex);
 		const { result } = response;
 		setImages(result);
+		setInProgress(false);
 	};
 	return (
 		<div>
@@ -150,15 +137,17 @@ function App() {
 			<button onClick={handleRandom} type="submit">
 				Random
 			</button>
-			<div>{progress > 0 && `Completed ${progress}%`}</div>
 			{/* {progress > 0 && progress <= 100 && (
 				<Progress value={progress} color="green" className="h-5" />
 			)} */}
+			{inProgress && <Progress variant="filled" value={20} />}
 			<div className="grid grid-cols-2 gap-4">
 				{images.map((image, index) => (
 					<img key={index} src={image} alt={`Image ${index}`} />
 				))}
 			</div>
+
+			<ToastContainer />
 		</div>
 	);
 	// const [mytime, setMytime] = useState(0);

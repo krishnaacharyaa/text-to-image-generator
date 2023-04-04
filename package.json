@@ -11,7 +11,8 @@
   "dependencies": {
     "@material-tailwind/react": "^1.4.2",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-toastify": "^9.1.2"
   },
   "devDependencies": {
     "@types/react": "^18.0.28",
