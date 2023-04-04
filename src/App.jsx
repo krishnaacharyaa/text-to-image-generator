@@ -47,7 +47,10 @@ const getPrediction = (prompt, randomValue = 3) => {
 			present = randomPromptsAndResults.find((obj) =>
 				obj.hasOwnProperty(prompt)
 			);
-			console.log(`present value ${present} ${present[prompt]}`);
+			console.log(`present value ${present} `);
+			if (present !== undefined) {
+				console.log(`${present[prompt]}`);
+			}
 			if (randomPromptsAndResults[randomValue][prompt]) {
 				result = randomPromptsAndResults[randomValue][prompt];
 			} else if (present != null) {
@@ -55,6 +58,7 @@ const getPrediction = (prompt, randomValue = 3) => {
 			} else if (prompt.trim() != "" && prompt != undefined) {
 				result = randomPromptsAndResults[3]["default prompt"];
 			}
+			console.log(result);
 			resolve({
 				status: "succeeded",
 				result: result,
