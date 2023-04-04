@@ -141,7 +141,7 @@ function App() {
 		<div className="flex min-h-screen w-full flex-col object-contain ">
 			<div className="relative h-96 w-full">
 				<div className="absolute h-full w-full bg-[url('https://static.fotor.com/app/features/img/aiimage/background_image3.jpg')] bg-cover object-cover"></div>
-				<div className="extra absolute flex h-full  w-full flex-col items-center justify-center bg-gradient-to-tr from-yellow-300 to-green-400 bg-clip-text text-3xl md:text-5xl  lg:text-7xl font-bold text-transparent">
+				<div className="extra absolute flex h-full  w-full flex-col items-center justify-center  bg-gradient-to-tr from-yellow-300 to-green-400 bg-clip-text text-3xl md:text-5xl  lg:text-7xl font-bold text-transparent">
 					Text to Image with <br />
 					<hr />
 					AI Image Generator
@@ -154,7 +154,7 @@ function App() {
 						onChange={(e) => setPrompt(e.target.value)}
 						placeholder="Describe what you want to see, Confused what to type ? select Suprise Me"
 					/>
-					<div className="flex gap-2 justify-center items-center disabled:bg-gray-400">
+					<div className="flex gap-2 justify-center items-center disabled:bg-gray-400 mb-6 mt-4 md:my-0">
 						<button
 							className="rounded-lg bg-green-400 p-2"
 							onClick={handleSubmit}
@@ -184,7 +184,7 @@ function App() {
 					))}
 				</div>
 			) : (
-				initialLoad && (
+				!initialLoad && (
 					<div className="hidden h-96 md:flex flex-col justify-start items-start md:px-28 px-8 py-8  bg-gradient-to-b from-[#2e1216] bg-black w-full ">
 						<div className="flex flex-col md:flex-row rounded-lg md:h-72 md:w-full ">
 							<img
@@ -217,7 +217,7 @@ function App() {
 					</div>
 				)
 			)}
-			<div className=" py-8 text-center text-2xl text-white bg-black">
+			<div className=" py-4 md:py-8 text-center text-2xl text-white bg-black">
 				Featured Gallery
 			</div>
 			<div className="flex md:flex-row flex-col justify-evenly gap-4 bg-black md:px-28 py-4">
@@ -227,7 +227,7 @@ function App() {
 						alt="Your Image"
 						className="h-72 w-full rounded-lg"
 					/>
-					<div className="absolute inset-x-0 bottom-0 bg-black bg-opacity-50 p-4">
+					<div className="absolute inset-x-0 bottom-0 px-9 md:px-0 bg-black bg-opacity-50 p-4">
 						<h2 className="font-bold text-white">
 							Panda bear baking a cake in a sunny kitchen, digital art
 						</h2>
@@ -240,7 +240,7 @@ function App() {
 						className="h-72 w-full  rounded-lg object-cover"
 					/>
 
-					<div className="absolute inset-x-0 bottom-0 bg-black bg-opacity-50 p-4">
+					<div className="absolute inset-x-0 bottom-0 px-9 md:px-0 bg-black bg-opacity-50 p-4">
 						<h2 className="font-bold text-white">
 							Portrait of a beutiful young woman of 18 age
 						</h2>
@@ -252,7 +252,7 @@ function App() {
 						alt="Your Image"
 						className="h-72 w-full rounded-lg"
 					/>
-					<div className="absolute inset-x-0 bottom-0 bg-black bg-opacity-50 p-4">
+					<div className="absolute inset-x-0 bottom-0 px-9 md:px-0 bg-black bg-opacity-50 p-4">
 						<h2 className="font-bold text-white">
 							Renaissance painting of an elephant in a tuxedo
 						</h2>
