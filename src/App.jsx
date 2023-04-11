@@ -138,7 +138,7 @@ function App() {
 		setImages(result);
 	};
 	return (
-		<div className="flex min-h-screen w-full flex-col object-contain ">
+		<div className="flex min-h-screen w-full flex-col object-contain bg-black">
 			<div className="relative h-96 w-full">
 				<div className="absolute h-full w-full bg-[url('https://static.fotor.com/app/features/img/aiimage/background_image3.jpg')] bg-cover object-cover"></div>
 
