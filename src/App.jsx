@@ -201,7 +201,7 @@ function App() {
 							)}
 							<img
 								className=" md:h-72 md:w-72 "
-								src="https://th.bing.com/th/id/OIP.TwiIfaePJW6nAT1P4dp_cgHaHa?pid=ImgDet&rs=1"
+								src="https://imgv3.fotor.com/images/cover-photo-image/a-beautiful-girl-with-gray-hair-and-lucxy-neckless-generated-by-Fotor-AI.jpg"
 							></img>
 							<div className="bg-gray-400 bg-opacity-40 flex-1 flex flex-col p-8">
 								<div className="text-white text-xl md:text-2xl font-extrabold mb-4">
